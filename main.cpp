@@ -1,7 +1,11 @@
+#pragma comment(lib, "Winmm.lib")
+
+#include <Windows.h>
 #include <iostream>
 #include <stdio.h>
-#include <Windows.h>
+#include <windows.h>
 #include <string>
+#include <mmsystem.h>
 
 using namespace std;
 
@@ -128,7 +132,7 @@ int main()
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
     SetConsoleActiveScreenBuffer(hConsole);
     DWORD dwBytesWritten = 0;
-
+    system("cls");
     Cube c;
     Spikes s;
     bool play = true;
@@ -136,6 +140,7 @@ int main()
     int n = 8;
     int x = 0, t = 0;
     int timeS = 20;
+    bool sT = false;
 
     while (play)
     {
@@ -147,6 +152,7 @@ int main()
         {
             jump = true;
             n = 15;
+            sT = true;
         }
         if (jump)
         {
@@ -192,11 +198,16 @@ int main()
                 t++;
             }
         }
+        if ((x + 20) % 75 == 0)
+        {
+            PlaySound(L"C:\\Score.wav", 0, SND_ASYNC);
+        }
         screenPrint(screen, w, c, s);
         WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
         Sleep(timeS);
         x++;
     }
+    PlaySound(L"C:\\Death.wav", 0, SND_ASYNC);
     wstring gameScore;
     gameScore += L"╔══════════════════════════╗";
     gameScore += L"║>><<     SCORE:       >><<║";
