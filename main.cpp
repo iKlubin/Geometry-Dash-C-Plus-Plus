@@ -3,8 +3,6 @@
 #include <Windows.h>
 #include <string>
 
-#define PI 3.14159f
-
 using namespace std;
 
 class Cube
@@ -126,6 +124,7 @@ int main()
     int w = 75;
     int h = 25;
     wchar_t* screen = new wchar_t[w * h];
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 23);
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
     SetConsoleActiveScreenBuffer(hConsole);
     DWORD dwBytesWritten = 0;
@@ -220,6 +219,6 @@ int main()
         screen[i + 11 * w] = strS[n];
     }
     WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
-    Sleep(1500);
+    cin.get();
     return 0;
 }
