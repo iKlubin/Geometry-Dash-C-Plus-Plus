@@ -1,27 +1,11 @@
 #include <iostream>
 #include <stdio.h>
-#include <windows.h>
+#include <Windows.h>
 #include <string>
-#include <conio.h>
 
-#define JUMP ' '
+#define PI 3.14159f
 
 using namespace std;
-
-void SetWindow(int Width, int Height)
-{
-    _COORD coord;
-    coord.X = Width;
-    coord.Y = Height;
-    _SMALL_RECT Rect;
-    Rect.Top = 0;
-    Rect.Left = 0;
-    Rect.Bottom = Height - 1;
-    Rect.Right = Width - 1;
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleScreenBufferSize(Handle, coord);
-    SetConsoleWindowInfo(Handle, TRUE, &Rect);
-}
 
 class Cube
 {
@@ -84,7 +68,10 @@ void screenPrint(wchar_t* screen, int w, Cube c, Spikes s)
             screen[i + j * w] = ' ';
         }
     }
-    wstring gameName = { L"╔══════════════════════════╗║>><<  GEOMETRY  DASH  >><<║╚══════════════════════════╝" };
+    wstring gameName;
+    gameName += L"╔══════════════════════════╗";
+    gameName += L"║>><<  GEOMETRY  DASH  >><<║";
+    gameName += L"╚══════════════════════════╝";
     int j = 1;
     int i = 24;
     for (int n = 0; n < 84; n++, i++)
@@ -119,7 +106,7 @@ void screenPrint(wchar_t* screen, int w, Cube c, Spikes s)
     }
 }
 
-bool collusionCube(Cube c, Spikes s)
+bool collisionCube(Cube c, Spikes s)
 {
     for (int i = c.getX() - 3; i < c.getX() + 3; i++)
     {
@@ -136,35 +123,35 @@ bool collusionCube(Cube c, Spikes s)
 
 int main()
 {
-    SetConsoleOutputCP(CP_UTF8);
     int w = 75;
     int h = 25;
-    SetWindow(h, w);
-    wchar_t* screen = new wchar_t[h * w];
+    wchar_t* screen = new wchar_t[w * h];
     HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
     SetConsoleActiveScreenBuffer(hConsole);
     DWORD dwBytesWritten = 0;
+
     Cube c;
     Spikes s;
     bool play = true;
     bool jump = false;
     int n = 8;
-    int key = 0;
     int x = 0, t = 0;
+    int timeS = 20;
+
     while (play)
     {
-        if (_kbhit())
+        if (timeS > 0)
         {
-            key = _getch();
-            if (key == JUMP and c.getY() == 20)
-            {
-                jump = true;
-                n = 15;
-            }
+            timeS = 20 - t;
+        }
+        if (GetAsyncKeyState((unsigned short)' ') and c.getY() == 20)
+        {
+            jump = true;
+            n = 15;
         }
         if (jump)
         {
-            if (n > 9)
+            if (n > 8)
             {
                 c.moveC(-1);
                 n--;
@@ -173,7 +160,7 @@ int main()
             {
                 n--;
             }
-            else if (n > 5)
+            else if (n == 6)
             {
                 c.moveC(-1);
                 n--;
@@ -193,7 +180,7 @@ int main()
                 jump = false;
             }
         }
-        if (collusionCube(c, s))
+        if (collisionCube(c, s))
         {
             play = false;
         }
@@ -208,10 +195,13 @@ int main()
         }
         screenPrint(screen, w, c, s);
         WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
-        Sleep(20 - t);
+        Sleep(timeS);
         x++;
     }
-    wstring gameScore = { L"╔══════════════════════════╗║>><<     SCORE:       >><<║╚══════════════════════════╝" };
+    wstring gameScore;
+    gameScore += L"╔══════════════════════════╗";
+    gameScore += L"║>><<     SCORE:       >><<║";
+    gameScore += L"╚══════════════════════════╝";
     int j = 10;
     int i = 24;
     for (int n = 0; n < 84; n++, i++)
@@ -230,6 +220,6 @@ int main()
         screen[i + 11 * w] = strS[n];
     }
     WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
-    Sleep(1000);
+    Sleep(1500);
     return 0;
 }
