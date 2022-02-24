@@ -198,14 +198,14 @@ int main()
         }
         if ((x + 20) % 75 == 0)
         {
-            PlaySound(L"F:\\Score.wav", 0, SND_ASYNC);
+            PlaySound(L"Score.wav", 0, SND_ASYNC);
         }
         screenPrint(screen, w, c, s);
         WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
         Sleep(timeS);
         x++;
     }
-    //PlaySound(L"F:\\Death.wav", 0, SND_ASYNC);
+    PlaySound(L"Death.wav", 0, SND_ASYNC);
     wstring gameScore;
     gameScore += L"╔══════════════════════════╗";
     gameScore += L"║>><<     SCORE:       >><<║";
@@ -228,6 +228,6 @@ int main()
         screen[i + 11 * w] = strS[n];
     }
     WriteConsoleOutputCharacter(hConsole, screen, h * w, { 0, 0 }, &dwBytesWritten);
-    cin.get();
+    Sleep(2000);
     return 0;
 }
